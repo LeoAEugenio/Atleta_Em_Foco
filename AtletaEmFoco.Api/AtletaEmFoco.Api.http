@@ -1,0 +1,6 @@
+@AtletaEmFoco.Api_HostAddress = http://localhost:5042
+
+GET {{AtletaEmFoco.Api_HostAddress}}/api/health/db
+Accept: application/json
+
+###

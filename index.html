@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#174782" />
+  <title>Atleta em Foco — Monitoramento e bem-estar</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<section id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="brand auth-brand"><div class="brand-mark"><img data-club-logo src="assets/aimore-escudo.png" alt="Brasão do Clube Esportivo Aimoré"></div><div class="brand-name">Atleta em Foco<small>bem-estar</small></div></div>
+    <div id="loginPanel">
+      <h1>Entrar</h1><p>Acesse com seu usuário de atleta ou comissão técnica.</p>
+      <form id="loginForm" class="auth-form">
+        <label>Usuário<input class="text-input" name="username" autocomplete="username" required></label>
+        <label>Senha<input class="text-input" name="password" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary" type="submit">Entrar</button>
+      </form>
+      <button id="showSetup" class="auth-link hidden" type="button">Configurar os primeiros acessos</button>
+      <div id="authMessage" class="auth-message" role="status"></div>
+    </div>
+    <div id="setupPanel" class="hidden">
+      <h1>Configuração inicial</h1><p>Crie um acesso de demonstração para o atleta e outro para a comissão. As senhas serão armazenadas com hash.</p>
+      <form id="setupForm" class="auth-form">
+        <label>Usuário do atleta<input class="text-input" name="athleteUsername" autocomplete="username" required></label>
+        <label>Senha do atleta<input class="text-input" name="athletePassword" type="password" minlength="8" autocomplete="new-password" required></label>
+        <label>Usuário da comissão<input class="text-input" name="commissionUsername" autocomplete="username" required></label>
+        <label>Senha da comissão<input class="text-input" name="commissionPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+        <button class="btn primary" type="submit">Criar acessos</button>
+      </form>
+      <button id="backToLogin" class="auth-link" type="button">Voltar ao login</button>
+      <div id="setupMessage" class="auth-message" role="status"></div>
+    </div>
+  </div>
+</section>
+<div class="shell hidden" id="appShell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark"><img data-club-logo src="assets/aimore-escudo.png" alt="Brasão do Clube Esportivo Aimoré"></div><div class="brand-name">Atleta em Foco<small>bem-estar</small></div></div>
+    <div><div class="nav-label">Menu</div><nav class="nav" aria-label="Navegação">
+      <button class="active" data-page="dashboard"><span class="ico">▦</span><span class="nav-text">Visão geral</span></button>
+      <button data-page="pre"><span class="ico">◉</span><span class="nav-text">Pré-treino</span></button>
+      <button data-page="post"><span class="ico">◷</span><span class="nav-text">Pós-treino</span></button>
+      <button data-page="reports"><span class="ico">⇩</span><span class="nav-text">Relatórios</span></button>
+      <button data-page="athletes"><span class="ico">♙</span><span class="nav-text">Atletas e acessos</span></button>
+    </nav></div>
+    <div class="side-bottom"><div class="person"><div class="avatar" id="avatar">CT</div><div><strong id="roleLabel">Comissão técnica</strong><br><span id="userLabel">Área de acompanhamento</span></div></div></div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="crumb">Atleta em Foco <span style="padding:0 7px;color:#c0c8c1">/</span><span id="crumbText">Visão geral</span></div><div class="top-actions"><span class="pill"><i class="dot"></i> Sessão autenticada</span><button class="btn" id="logoutButton">Sair</button></div></header>
+    <div class="content">
+      <section id="page-dashboard" class="page">
+        <div class="page-head"><div><div class="eyebrow">Acompanhamento diário</div><h1>Bem-estar da equipe</h1><p>Panorama calculado a partir das avaliações registradas.</p></div><button class="btn primary" data-go="pre">＋ Nova avaliação</button></div>
+        <div class="grid stats">
+          <article class="card stat"><div class="stat-top"><span>Respostas hoje</span><span>◉</span></div><div class="stat-value" id="statReplies">0</div><div class="stat-note">Avaliações recebidas hoje</div></article>
+          <article class="card stat"><div class="stat-top"><span>Recuperação média</span><span>↗</span></div><div class="stat-value" id="statRecovery">—</div><div class="stat-note">Pré-treino · últimos 7 dias</div></article>
+          <article class="card stat"><div class="stat-top"><span>Relatos de dor</span><span>⌖</span></div><div class="stat-value" id="statPain">0</div><div class="stat-note" id="statPainNote">Avaliações pré-treino</div></article>
+          <article class="card stat"><div class="stat-top"><span>Carga média</span><span>⌁</span></div><div class="stat-value" id="statLoad">—</div><div class="stat-note">Esforço × duração · pós-treino</div></article>
+        </div>
+        <div class="grid dashboard-grid">
+          <article class="card"><div class="card-head"><div><h2>Recuperação e fadiga</h2><p>Médias registradas · últimos 7 dias</p></div><span class="tag">Dados do banco</span></div><div class="chart-wrap"><svg class="chart" id="trendChart" viewBox="0 0 600 205" preserveAspectRatio="none" aria-label="Gráfico de recuperação e fadiga"></svg></div></article>
+          <article class="card"><div class="card-head"><div><h2>Mapa de desconforto</h2><p>Regiões mais selecionadas · 7 dias</p></div><button class="btn" data-go="reports" style="font-size:12px;padding:7px 9px">Detalhes ↗</button></div><div class="body-heat"><div class="mini-body" id="miniHeat"></div><div class="heat-legend"><div class="legend-item"><i class="legend-dot" style="background:#e4edf7"></i> 0–1 relatos</div><div class="legend-item"><i class="legend-dot" style="background:#84acd8"></i> 2–3 relatos</div><div class="legend-item"><i class="legend-dot" style="background:#174782"></i> 4 ou mais</div></div></div></article>
+        </div>
+        <article class="card table-card"><div class="card-head"><div><h2>Últimas respostas</h2><p>Acompanhamento das avaliações mais recentes</p></div><button class="btn" data-go="reports" style="font-size:12px">Ver relatórios →</button></div><table class="table"><thead><tr><th>ATLETA</th><th>RECUPERAÇÃO / ESFORÇO</th><th>RELATO</th><th>SESSÃO</th><th>STATUS</th></tr></thead><tbody id="latestRows"></tbody></table></article>
+      </section>
+      <section id="page-pre" class="page hidden">
+        <div class="page-head"><div><div class="eyebrow">Avaliação diária</div><h1>Pré-treino</h1><p>Registre como você está se sentindo antes da sessão.</p></div><span class="pill">● Avaliação pré-sessão</span></div>
+        <div class="profile-banner"><div><h2>Oi, <span id="athleteName">atleta</span></h2><p></p></div><span class="pill" style="background:#174782;color:#fff">Uma resposta por sessão</span></div>
+        <div class="club-partner"><img class="club-symbol" data-club-logo src="assets/aimore-escudo.png" alt="Brasão do Clube Esportivo Aimoré"><div><strong>Clube parceiro · <span data-club-name>Aimoré</span></strong><small><span data-club-full-name>Clube Esportivo Aimoré</span> · aplicação utilizada a pedido do clube</small></div></div>
+        <form id="preForm" class="form-layout">
+          <div class="card form-card"><h2>Como você está hoje?</h2><p class="sub">Responda com base na sua percepção neste momento.</p>
+            <div class="field"><label for="preTrainingSession">Sessão de treino</label><select class="select-input" id="preTrainingSession" name="trainingSessionId" required><option value="">Carregando sessões…</option></select><small id="preSessionStatus" role="status">Selecione a sessão correspondente.</small></div>
+            <div class="field"><label>Qual está sendo sua recuperação?</label><div class="range-row scale" data-name="recuperacao" data-max="10"></div><div class="scale-labels"><span>1 – Pouca recuperação</span><span>10 – Recuperação total</span></div></div>
+            <div class="two-col"><div class="field"><label>Horas de sono na última noite</label><input class="text-input" name="sonoHoras" inputmode="decimal" placeholder="Ex.: 7,5" type="number" min="0" max="24" step="0.5"><small>Informe horas, aceitando meios períodos.</small></div><div class="field"><label>Qualidade do sono</label><div class="range-row scale" data-name="sonoQualidade" data-max="7"></div><div class="scale-labels"><span>1 – Muito ruim</span><span>7 – Muito boa</span></div></div></div>
+            <div class="two-col"><div class="field"><label>Nível de estresse</label><div class="range-row scale" data-name="estresse" data-max="7"></div><div class="scale-labels"><span>1 – Pouco estresse</span><span>7 – Estresse muito alto</span></div></div><div class="field"><label>Fadiga muscular</label><div class="range-row scale" data-name="fadiga" data-max="7"></div><div class="scale-labels"><span>1 – Pouca fadiga muscular</span><span>7 – Muita fadiga muscular</span></div></div></div>
+            <div class="field"><label>Nível de hidratação</label><div class="range-row scale" data-name="hidratacao" data-max="8"></div><div class="scale-labels"><span>1 – Muito desidratado</span><span>8 – Bem hidratado</span></div></div>
+            <div class="form-actions"><span class="note">Uma avaliação pré-treino por atleta e por sessão.</span><button id="preSubmitButton" class="btn primary" type="submit">Salvar avaliação →</button></div>
+          </div>
+          <div class="card map-card"><h2>Está sentindo alguma dor?</h2><p>Toque na parte do corpo onde sente desconforto. As vistas frontal e posterior mostram a musculatura.</p><div class="map-controls"><button type="button" class="switch active" data-view="front">Frente</button><button type="button" class="switch" data-view="back">Costas</button><span style="margin-left:auto;font-size:10px;color:#869189;align-self:center">SEU LADO ESQUERDO/DIREITO</span></div><div class="body-stage" id="bodyStage"></div><div class="selected-list" id="selectedList"><span class="note">Nenhuma região selecionada</span></div><label class="no-pain"><input type="checkbox" id="noPain"> Não estou sentindo dor</label><div class="map-helper">Toque novamente em uma área selecionada para removê-la.</div></div>
+        </form>
+      </section>
+      <section id="page-post" class="page hidden">
+        <div class="page-head"><div><div class="eyebrow">Avaliação diária</div><h1>Pós-treino</h1><p>Registre sua percepção sobre a sessão que acabou de realizar.</p></div><span class="pill">● Avaliação pós-sessão</span></div>
+        <div class="club-partner"><img class="club-symbol" data-club-logo src="assets/aimore-escudo.png" alt="Brasão do Clube Esportivo Aimoré"><div><strong>Clube parceiro · <span data-club-name>Aimoré</span></strong><small><span data-club-full-name>Clube Esportivo Aimoré</span> · aplicação utilizada a pedido do clube</small></div></div>
+        <form id="postForm" class="card form-card" style="max-width:760px"><h2>Como foi o treino?</h2><p class="sub">Não existe resposta certa ou errada. Informe sua percepção.</p><div class="field"><label for="postTrainingSession">Sessão de treino</label><select class="select-input" id="postTrainingSession" name="trainingSessionId" required><option value="">Carregando sessões…</option></select><small id="postSessionStatus" role="status">Selecione a sessão correspondente.</small></div><div class="field"><label>Qual foi sua percepção de esforço hoje?</label><div class="range-row scale" data-name="esforco" data-max="10"></div><div class="scale-labels"><span>1 – Pouco esforço</span><span>10 – Esforço máximo</span></div><div class="scale-note" id="effortNote">Escolha uma nota para ver a descrição correspondente.</div></div><div class="field" style="max-width:320px"><label>Quantos minutos você treinou hoje?</label><input class="text-input" type="number" name="duracao" min="1" max="600" placeholder="Ex.: 90" required><small>Informe a duração total aproximada, em minutos.</small></div><div class="form-actions"><span class="note">Uma avaliação pós-treino por atleta e por sessão.</span><button id="postSubmitButton" class="btn primary" type="submit">Enviar pós-treino →</button></div></form>
+      </section>
+      <section id="page-athletes" class="page hidden">
+        <div class="page-head"><div><div class="eyebrow">Administração de acessos</div><h1>Atletas e acessos</h1><p>Cadastre cada atleta com seu próprio usuário e senha.</p></div></div>
+        <div class="grid dashboard-grid">
+          <form id="athleteCreateForm" class="card form-card"><h2>Novo atleta</h2><p class="sub">O atleta poderá entrar para responder os formulários.</p>
+            <div class="field"><label>Nome completo</label><input class="text-input" name="name" maxlength="150" required></div>
+            <div class="field"><label>Usuário</label><input class="text-input" name="username" maxlength="254" autocomplete="off" required></div>
+            <div class="field"><label>Senha inicial</label><input class="text-input" name="password" type="password" minlength="8" autocomplete="new-password" required><small>Use pelo menos 8 caracteres e entregue a senha ao atleta por um canal seguro.</small></div>
+            <div class="form-actions"><span class="note">A senha será armazenada como hash.</span><button class="btn primary" type="submit">Criar acesso</button></div>
+            <div id="athleteAdminMessage" class="auth-message" role="status"></div>
+          </form>
+          <article class="card table-card" style="margin-top:0"><div class="card-head"><div><h2>Contas de atletas</h2><p>Usuários vinculados ao cadastro de atleta</p></div><button class="btn" id="refreshAthletes" type="button">Atualizar</button></div><div id="athleteList" class="athlete-list"><span class="note">Carregando…</span></div></article>
+        </div>
+        <article class="card table-card"><div class="card-head"><div><h2>Sessões de treino</h2><p>Cadastre os treinos ou partidas para que os atletas vinculem suas respostas.</p></div><button class="btn" id="refreshTrainingSessions" type="button">Atualizar</button></div>
+          <form id="trainingSessionCreateForm" class="session-create-form">
+            <div class="field"><label for="sessionStartsAt">Data e hora</label><input class="text-input" type="datetime-local" id="sessionStartsAt" name="startsAt" required></div>
+            <div class="field"><label for="sessionType">Tipo</label><select class="select-input" id="sessionType" name="sessionType"><option value="Training">Treino</option><option value="Match">Partida</option></select></div>
+            <div class="field"><label for="sessionDescription">Descrição (opcional)</label><input class="text-input" id="sessionDescription" name="description" maxlength="250" placeholder="Ex.: Treino da tarde"></div>
+            <div class="field session-action"><button class="btn primary" type="submit">Cadastrar sessão</button></div>
+          </form>
+          <div id="trainingSessionAdminMessage" class="auth-message" role="status" style="margin:0 20px 10px"></div>
+          <div id="trainingSessionList" class="athlete-list"><span class="note">Carregando sessões…</span></div>
+        </article>
+      </section>
+      <section id="page-reports" class="page hidden">
+        <div class="page-head"><div><div class="eyebrow">Análise e exportação</div><h1>Relatórios</h1><p>Consulte as respostas registradas e exporte os dados em CSV.</p></div><button id="exportCsv" class="btn primary">⇩ Exportar CSV</button></div>
+        <div class="grid stats"><article class="card stat"><div class="stat-top"><span>Avaliações registradas</span><span>▤</span></div><div class="stat-value" id="reportCount">0</div><div class="stat-note">Registros retornados pelo sistema</div></article><article class="card stat"><div class="stat-top"><span>Avaliações com relato de dor</span><span>⌖</span></div><div class="stat-value" id="reportPain">0</div><div class="stat-note">Registros pré-treino</div></article><article class="card stat"><div class="stat-top"><span>Esforço médio</span><span>↗</span></div><div class="stat-value" id="reportEffort">—</div><div class="stat-note">Escala de 1 a 10 · pós-treino</div></article><article class="card stat"><div class="stat-top"><span>Tempo médio</span><span>◷</span></div><div class="stat-value" id="reportDuration">—</div><div class="stat-note">Minutos · pós-treino</div></article></div>
+        <div class="grid dashboard-grid"><article class="card"><div class="card-head"><div><h2>Regiões mais relatadas</h2><p>Seleções do mapa corporal</p></div></div><div class="bar-list" id="regionBars"></div></article><article class="card"><div class="card-head"><div><h2>Exportação</h2><p>Dados disponíveis para consulta</p></div></div><div class="form-card" style="padding-top:5px"><div class="notice">O arquivo CSV reúne as avaliações que a comissão técnica pode consultar no banco.</div><button class="btn dark" style="width:100%" id="exportCsv2">Baixar relatório CSV</button></div></article></div>
+        <article class="card table-card"><div class="card-head"><div><h2>Avaliações</h2><p>Respostas consultadas no PostgreSQL</p></div><span class="tag" id="localRecordCount">0 registros</span></div><table class="table"><thead><tr><th>DATA/HORA</th><th>ATLETA</th><th>TIPO</th><th>DETALHE</th></tr></thead><tbody id="localRows"></tbody></table></article>
+      </section>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>

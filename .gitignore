@@ -1,0 +1,28 @@
+# Sistema operacional e editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+
+# Dependências e saídas de build (para etapas futuras)
+node_modules/
+dist/
+bin/
+obj/
+
+# Dados locais de desenvolvimento
+*.db
+*.sqlite
+*.log
+
+# Pacotes de entrega e cópias de banco
+*.zip
+*.dump
+*.bak
+.vs/
